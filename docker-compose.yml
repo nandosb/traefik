@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+    nginx:
+        image: nginx
+        restart: always
+        # ports:
+        #     - "81:80"
+        # labels:
+        #     - traefik.http.routers.nginx.rule=Host(`nginx.localhost`)
+        #     - traefik.http.services.my-service.loadbalancer.server.port=12345
+    apache:
+        image: httpd
+        restart: always
+        # ports:
+        #     - "82:80"
+        # labels:
+        #     - traefik.http.routers.apache.rule=Host(`apache.localhost`)
+        #     - traefik.http.services.my-service.loadbalancer.server.port=12345
+    traefik:
+        image: traefik
+        ports: 
+            - "8080:8080"
+            - "80:80"
+        volumes:
+            - ./traefik.yml:/etc/traefik/traefik.yml
+            - ~/Library/Containers/com.docker.docker/Data/docker.sock:/var/run/docker.sock
+        depends_on: 
+            - nginx
+            - apache
