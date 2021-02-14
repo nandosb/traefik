@@ -20,6 +20,7 @@ services:
             - "80:80"
         volumes:
             - ./traefik.yml:/etc/traefik/traefik.yml
+            - ./file_provider:/etc/traefik/file_provider
             - /var/run/docker.sock:/var/run/docker.sock
         depends_on: 
             - nginx

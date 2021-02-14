@@ -1,0 +1,11 @@
+http:
+  routers:
+    my-local-domain:
+        rule: "Host(`mylocaldomain.com`)"
+        service: my-local-domain
+  services:
+    my-local-domain:
+      loadBalancer:
+        servers:
+        - url: "https://yahoo.com"
+        - url: "https://google.com"
