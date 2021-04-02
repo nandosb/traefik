@@ -10,7 +10,21 @@ services:
         image: httpd
         labels:
             - traefik.http.routers.apache.rule=Host(`apache.localhost`)
-        #     - traefik.http.services.my-service.loadbalancer.server.port=12345
+            - traefik.http.routers.apache.middlewares=auth@docker
+
+    auth-service:
+        build:
+            context: .
+            dockerfile: ./authService/Dockerfile
+        labels:
+            - "traefik.http.routers.auth-service.rule=Host(`auth.localhost`)"
+            - "traefik.http.middlewares.auth.forwardauth.address=http://auth-service/auth"
+            - "traefik.http.middlewares.auth.forwardauth.trustForwardHeader=true"
+            - "traefik.http.middlewares.auth.forwardauth.authResponseHeaders=X-Auth-Token"
+        environment:
+            - CURRENTDOMAIN=auth.localhost
+        volumes:
+            - ./authService/src:/var/authService/src
     traefik:
         image: traefik
         ports: 
@@ -25,3 +39,4 @@ services:
         depends_on: 
             - nginx
             - apache
+            - auth-service
